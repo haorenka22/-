@@ -1,0 +1,30 @@
+from flask import Flask, render_template, request, redirect
+
+app = Flask(__name__)
+
+# 存储任务的列表
+tasks = []
+
+# 首页路由
+@app.route('/')
+def index():
+    return render_template('index.html', tasks=tasks)
+
+# 创建任务路由
+@app.route('/create', methods=['POST'])
+def create():
+    title = request.form['title']
+    deadline = request.form['deadline']
+    priority = request.form['priority']
+    task = {'title': title, 'deadline': deadline, 'priority': priority, 'completed': False}
+    tasks.append(task)
+    return redirect('/')
+
+# 标记任务完成路由
+@app.route('/complete/<int:task_id>')
+def complete(task_id):
+    tasks[task_id]['completed'] = True
+    return redirect('/')
+
+if __name__ == '__main__':
+    app.run(debug=True)
